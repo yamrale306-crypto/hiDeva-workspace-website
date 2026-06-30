@@ -1574,7 +1574,8 @@ html[data-theme="dark"] .text-bg-danger {
   }
 }
 
-html:not([data-theme="dark"]) {
+html:not([data-theme="dark"]),
+html[data-theme="light"] {
   --admin-sidebar: #ffffff;
   --admin-sidebar-soft: #eef4ff;
   --admin-sidebar-border: #dbe4ef;
@@ -1584,6 +1585,8 @@ html:not([data-theme="dark"]) {
   --admin-sidebar-icon-bg: #eaf2ff;
   --admin-sidebar-icon: #2563eb;
   --admin-sidebar-shadow: 18px 0 42px rgba(15, 23, 42, 0.08);
+  --admin-text: #1f2937;
+  --admin-bg: #f5f7fb;
 }
 
 html[data-theme="dark"] {
@@ -1594,6 +1597,8 @@ html[data-theme="dark"] {
   --admin-sidebar-icon-bg: rgba(255, 255, 255, 0.08);
   --admin-sidebar-icon: #bfdbfe;
   --admin-sidebar-shadow: 18px 0 42px rgba(0, 0, 0, 0.34);
+  --admin-text: #e5edf7;
+  --admin-bg: #0f172a;
 }
 
 .admin-sidebar {
@@ -1864,8 +1869,14 @@ html {
 
 /* Navigation */
 .navbar {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(15, 23, 42, 0.08);
   transition: all 0.3s ease;
+}
+
+html[data-theme="dark"] .navbar {
+  background: rgba(15, 23, 42, 0.88);
 }
 
 .navbar-scrolled {
