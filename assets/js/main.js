@@ -141,9 +141,52 @@
       });
     }
 
+    function initScrollReveal() {
+      var revealEls = document.querySelectorAll("[data-reveal]");
+      if (!revealEls.length) return;
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          el.classList.add("animated");
+          observer.unobserve(el);
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+
+      Array.prototype.forEach.call(revealEls, function (el) {
+        el.classList.add("animate-init");
+        observer.observe(el);
+      });
+    }
+
+    function initStaggerReveal() {
+      var staggerEls = document.querySelectorAll("[data-reveal-stagger]");
+      Array.prototype.forEach.call(staggerEls, function (parent) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            parent.classList.add("animated");
+            observer.unobserve(parent);
+          });
+        }, { threshold: 0.1 });
+        observer.observe(parent);
+      });
+    }
+
+    function initLazyImages() {
+      if ("loading" in HTMLImageElement.prototype) {
+        var imgs = document.querySelectorAll("img[loading='lazy']");
+        Array.prototype.forEach.call(imgs, function (img) { img.loading = "lazy"; });
+      }
+    }
+
     initValidation();
     initTableSearch();
     initThemeToggle();
+    initScrollReveal();
+    initStaggerReveal();
+    initLazyImages();
 
     // Initialize user profile values in UI. Provide a window.adminHMDUser object to override defaults.
     function initUserProfile() {

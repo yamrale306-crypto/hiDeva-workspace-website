@@ -1639,6 +1639,226 @@ html[data-theme="dark"] {
 }
 
 /* ========================================
+   Animations & Motion
+   ======================================== */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate {
+  visibility: visible;
+}
+
+.animate-init {
+  opacity: 0;
+}
+
+.animate-fade-in-up,
+.animate-fade-in-down,
+.animate-fade-in-left,
+.animate-fade-in-right,
+.animate-scale-in {
+  opacity: 0;
+}
+
+.animate-fade-in-up.animated     { animation: fadeInUp 0.6s ease forwards; }
+.animate-fade-in-down.animated   { animation: fadeInDown 0.6s ease forwards; }
+.animate-fade-in-left.animated   { animation: fadeInLeft 0.6s ease forwards; }
+.animate-fade-in-right.animated  { animation: fadeInRight 0.6s ease forwards; }
+.animate-scale-in.animated       { animation: scaleIn 0.5s ease forwards; }
+
+/* Staggered delays for child animations */
+.anim-stagger > .animate-stagger {
+  opacity: 0;
+}
+.anim-stagger.animated > .animate-stagger:nth-child(1)  { animation: fadeInUp 0.5s ease 0.05s forwards; }
+.anim-stagger.animated > .animate-stagger:nth-child(2)  { animation: fadeInUp 0.5s ease 0.10s forwards; }
+.anim-stagger.animated > .animate-stagger:nth-child(3)  { animation: fadeInUp 0.5s ease 0.15s forwards; }
+.anim-stagger.animated > .animate-stagger:nth-child(4)  { animation: fadeInUp 0.5s ease 0.20s forwards; }
+.anim-stagger.animated > .animate-stagger:nth-child(5)  { animation: fadeInUp 0.5s ease 0.25s forwards; }
+.anim-stagger.animated > .animate-stagger:nth-child(6)  { animation: fadeInUp 0.5s ease 0.30s forwards; }
+.anim-stagger.animated > .animate-stagger:nth-child(7)  { animation: fadeInUp 0.5s ease 0.35s forwards; }
+.anim-stagger.animated > .animate-stagger:nth-child(8)  { animation: fadeInUp 0.5s ease 0.40s forwards; }
+
+/* Sidebar slide-in on page load */
+.admin-sidebar {
+  animation: slideInLeft 0.35s ease;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--admin-shadow-lg);
+}
+
+/* Hover glow for interactive elements */
+.hover-glow {
+  transition: box-shadow 0.2s ease;
+}
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.15);
+}
+
+/* Smooth image reveal */
+.img-reveal {
+  clip-path: inset(0);
+  transition: clip-path 0.6s ease;
+}
+.img-reveal.revealed {
+  clip-path: inset(0);
+}
+
+/* Metric value count-up animation */
+.metric-value {
+  animation: countUp 0.8s ease;
+}
+
+/* Button hover micro-animation */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  background-size: 200% 100%;
+  transform: translateX(-100%);
+  transition: transform 0s;
+}
+.btn:active::after {
+  transform: translateX(100%);
+  transition: transform 0.4s ease;
+}
+
+/* Card entry animation on mount */
+.metric-card,
+.panel {
+  animation: fadeInUp 0.5s ease;
+}
+.metric-card:nth-child(2) { animation-delay: 0.08s; }
+.metric-card:nth-child(3) { animation-delay: 0.16s; }
+.metric-card:nth-child(4) { animation-delay: 0.24s; }
+
+/* Sidebar nav link hover slide */
+.sidebar-nav .nav-link {
+  position: relative;
+}
+.sidebar-nav .nav-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 24px;
+  border-radius: 0 3px 3px 0;
+  background: var(--admin-primary);
+  transition: transform 0.2s ease;
+}
+.sidebar-nav .nav-link:hover::before,
+.sidebar-nav .nav-link.active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+/* Progress bar animation */
+.progress-bar {
+  animation: progressFill 1s ease;
+}
+@keyframes progressFill {
+  from { width: 0; }
+}
+
+/* Chart bar animation */
+.chart-column span {
+  animation: barGrow 0.8s ease;
+  transform-origin: bottom;
+}
+@keyframes barGrow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading shimmer for placeholder content */
+.shimmer-placeholder {
+  background: linear-gradient(90deg, var(--admin-surface-soft) 25%, var(--admin-border) 50%, var(--admin-surface-soft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Responsive animation reductions */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+@media (max-width: 767.98px) {
+  .metric-card,
+  .panel {
+    animation-duration: 0.4s;
+  }
+  .sidebar-nav .nav-link::before {
+    display: none;
+  }
+}
+
+/* ========================================
    hiDeva Landing Page Styles
    ======================================== */
 
