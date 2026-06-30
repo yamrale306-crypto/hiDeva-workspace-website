@@ -36,6 +36,28 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
+body.auth-checking .admin-shell {
+  visibility: hidden;
+}
+
+/* Loading state for async data sections */
+.section-loading {
+  position: relative;
+  min-height: 120px;
+}
+.section-loading::after {
+  content: "Loading...";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--admin-surface);
+  color: var(--admin-muted);
+  font-size: 0.9rem;
+  z-index: 1;
+}
+
 a {
   text-decoration: none;
 }

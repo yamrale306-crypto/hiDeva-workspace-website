@@ -17,7 +17,7 @@
 
     <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
       <div class="sidebar-header">
-        <a class="brand-mark" href="index.html" aria-label="adminHMD dashboard">
+        <a class="brand-mark" href="dashboard.html" aria-label="adminHMD dashboard">
           <span class="brand-icon"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i></span>
           <span class="brand-copy">
             <span class="brand-title">adminHMD</span>
@@ -27,7 +27,7 @@
       </div>
 
       <nav class="sidebar-nav">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="dashboard.html">
           <span class="nav-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
           <span class="nav-text">Dashboard</span>
         </a>
@@ -137,7 +137,7 @@
                 <li><a class="dropdown-item" href="profile.html">Profile</a></li>
                 <li><a class="dropdown-item" href="settings.html">Account settings</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="login.html">Sign out</a></li>
+                <li><a class="dropdown-item" href="#" data-action="signout">Sign out</a></li>
               </ul>
             </div>
           </div>
@@ -198,7 +198,43 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../assets/js/supabase.js"></script>
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/main.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var db = window.adminHMD && window.adminHMD.db;
+    if (!db) return;
+    var form = document.querySelector(".needs-validation");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) return;
+      var data = {
+        first_name: document.getElementById("firstName").value,
+        last_name: document.getElementById("lastName").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        role: document.getElementById("role").value,
+        team: document.getElementById("team").value,
+        notes: document.getElementById("notes").value,
+      };
+      var btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Creating...';
+      db.users.create(data).then(function (result) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-person-check" aria-hidden="true"></i> Create User';
+        if (result.error) {
+          alert(result.error.message);
+        } else {
+          window.location.href = "users.html";
+        }
+      });
+    });
+  })();
+  </script>
 </body>
 </html>

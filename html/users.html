@@ -17,7 +17,7 @@
 
     <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
       <div class="sidebar-header">
-        <a class="brand-mark" href="index.html" aria-label="adminHMD dashboard">
+        <a class="brand-mark" href="dashboard.html" aria-label="adminHMD dashboard">
           <span class="brand-icon"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i></span>
           <span class="brand-copy">
             <span class="brand-title">adminHMD</span>
@@ -27,7 +27,7 @@
       </div>
 
       <nav class="sidebar-nav">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="dashboard.html">
           <span class="nav-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
           <span class="nav-text">Dashboard</span>
         </a>
@@ -137,7 +137,7 @@
                 <li><a class="dropdown-item" href="profile.html">Profile</a></li>
                 <li><a class="dropdown-item" href="settings.html">Account settings</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="login.html">Sign out</a></li>
+                <li><a class="dropdown-item" href="#" data-action="signout">Sign out</a></li>
               </ul>
             </div>
           </div>
@@ -332,7 +332,43 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../assets/js/supabase.js"></script>
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/main.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var db = window.adminHMD && window.adminHMD.db;
+    if (!db) return;
+    var tableSection = document.querySelector("#usersTable") && document.querySelector("#usersTable").closest(".panel");
+    if (tableSection) tableSection.classList.add("section-loading");
+    db.users.list().then(function (result) {
+      if (tableSection) tableSection.classList.remove("section-loading");
+      if (result.error) { console.error(result.error); return; }
+      var users = result.data;
+      var tbody = document.querySelector("#usersTable tbody");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+      if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No users found.</td></tr>';
+        return;
+      }
+      users.forEach(function (u) {
+        var badge = u.status === "Active" ? "text-bg-success" : u.status === "Pending" ? "text-bg-warning" : "text-bg-secondary";
+        var initials = (u.first_name.charAt(0) + u.last_name.charAt(0)).toUpperCase();
+        var row = document.createElement("tr");
+        row.innerHTML = '<td><div class="d-flex align-items-center gap-2"><div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-semibold" style="width:32px;height:32px;font-size:13px">' + initials + '</div><div><p class="fw-semibold mb-0">' + u.first_name + " " + u.last_name + '</p><p class="text-muted small mb-0">' + u.email + "</p></div></div></td><td>" + u.role + '</td><td>' + u.team + '</td><td><span class="badge ' + badge + '">' + u.status + '</span></td><td>' + (u.created_at ? new Date(u.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "") + '</td><td class="text-end"><a class="btn btn-light btn-sm" href="user-details.html?id=' + u.id + '">View</a></td>';
+        tbody.appendChild(row);
+      });
+      var vals = document.querySelectorAll(".metric-value");
+      var total = users.length, active = users.filter(function (x) { return x.status === "Active"; }).length, pending = users.filter(function (x) { return x.status === "Pending"; }).length, suspended = users.filter(function (x) { return x.status === "Suspended"; }).length;
+      if (vals[0]) vals[0].textContent = total.toLocaleString();
+      if (vals[1]) vals[1].textContent = active.toLocaleString();
+      if (vals[2]) vals[2].textContent = pending.toLocaleString();
+      if (vals[3]) vals[3].textContent = suspended.toLocaleString();
+    });
+  })();
+  </script>
 </body>
 </html>

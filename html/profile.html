@@ -17,7 +17,7 @@
 
     <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
       <div class="sidebar-header">
-        <a class="brand-mark" href="index.html" aria-label="adminHMD dashboard">
+        <a class="brand-mark" href="dashboard.html" aria-label="adminHMD dashboard">
           <span class="brand-icon"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i></span>
           <span class="brand-copy">
             <span class="brand-title">adminHMD</span>
@@ -27,7 +27,7 @@
       </div>
 
       <nav class="sidebar-nav">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="dashboard.html">
           <span class="nav-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
           <span class="nav-text">Dashboard</span>
         </a>
@@ -137,7 +137,7 @@
                 <li><a class="dropdown-item" href="profile.html">Profile</a></li>
                 <li><a class="dropdown-item" href="settings.html">Account settings</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="login.html">Sign out</a></li>
+                <li><a class="dropdown-item" href="#" data-action="signout">Sign out</a></li>
               </ul>
             </div>
           </div>
@@ -190,7 +190,51 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../assets/js/supabase.js"></script>
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/main.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var auth = window.adminHMD && window.adminHMD.auth;
+    if (!auth) return;
+    auth.getUser().then(function (result) {
+      if (result.error || !result.data.user) return;
+      var user = result.data.user;
+      var email = user.email || "";
+      var name = (user.user_metadata && user.user_metadata.full_name) || email.split("@")[0];
+      var nEl = document.getElementById("profileName");
+      var eEl = document.getElementById("profileEmail");
+      if (nEl) nEl.value = name;
+      if (eEl) eEl.value = email;
+      var pEl = document.querySelector(".profile-name");
+      if (pEl) pEl.textContent = name;
+      window.adminHMD.user = window.adminHMD.user || {};
+      window.adminHMD.user.name = name;
+      var sEl = document.querySelector(".sidebar-user strong");
+      if (sEl) sEl.textContent = name;
+    });
+    var form = document.querySelector(".needs-validation");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) return;
+      var name = document.getElementById("profileName").value;
+      var bio = document.getElementById("profileBio").value;
+      var btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Saving...';
+      auth.getUser().then(function (r) {
+        if (r.error) return;
+        window.adminHMD.supabase.auth.updateUser({ data: { full_name: name, bio: bio } }).then(function () {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="bi bi-check2-circle" aria-hidden="true"></i> Save Profile';
+          alert("Profile updated successfully.");
+        });
+      });
+    });
+  })();
+  </script>
 </body>
 </html>

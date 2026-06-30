@@ -17,7 +17,7 @@
 
     <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
       <div class="sidebar-header">
-        <a class="brand-mark" href="index.html" aria-label="adminHMD dashboard">
+        <a class="brand-mark" href="dashboard.html" aria-label="adminHMD dashboard">
           <span class="brand-icon"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i></span>
           <span class="brand-copy">
             <span class="brand-title">adminHMD</span>
@@ -27,7 +27,7 @@
       </div>
 
       <nav class="sidebar-nav">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="dashboard.html">
           <span class="nav-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
           <span class="nav-text">Dashboard</span>
         </a>
@@ -137,7 +137,7 @@
                 <li><a class="dropdown-item" href="profile.html">Profile</a></li>
                 <li><a class="dropdown-item" href="settings.html">Account settings</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="login.html">Sign out</a></li>
+                <li><a class="dropdown-item" href="#" data-action="signout">Sign out</a></li>
               </ul>
             </div>
           </div>
@@ -191,7 +191,50 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../assets/js/supabase.js"></script>
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/main.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var db = window.adminHMD && window.adminHMD.db;
+    if (!db) return;
+    db.settings.get().then(function (result) {
+      if (result.error || !result.data) return;
+      var s = result.data;
+      document.getElementById("workspaceName").value = s.workspace_name || "";
+      if (s.default_language) document.getElementById("defaultLanguage").value = s.default_language;
+      var toggles = document.querySelectorAll(".settings-list input[type=\"checkbox\"]");
+      if (toggles[0]) toggles[0].checked = s.email_alerts !== false;
+      if (toggles[1]) toggles[1].checked = s.weekly_reports !== false;
+      if (toggles[2]) toggles[2].checked = s.two_factor_auth === true;
+    });
+    var form = document.querySelector(".needs-validation");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) return;
+      var toggles = document.querySelectorAll(".settings-list input[type=\"checkbox\"]");
+      var data = {
+        workspace_name: document.getElementById("workspaceName").value,
+        default_language: document.getElementById("defaultLanguage").value,
+        email_alerts: toggles[0] ? toggles[0].checked : true,
+        weekly_reports: toggles[1] ? toggles[1].checked : true,
+        two_factor_auth: toggles[2] ? toggles[2].checked : false,
+        updated_at: new Date().toISOString(),
+      };
+      var btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Saving...';
+      db.settings.upsert(data).then(function (result) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check2-circle" aria-hidden="true"></i> Save Settings';
+        if (result.error) alert(result.error.message);
+        else alert("Settings saved successfully.");
+      });
+    });
+  })();
+  </script>
 </body>
 </html>

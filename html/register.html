@@ -36,7 +36,38 @@
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../assets/js/supabase.js"></script>
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/main.js"></script>
+  <script>
+  (function () {
+    "use strict";
+    var auth = window.adminHMD && window.adminHMD.auth;
+    if (!auth) return;
+    var form = document.querySelector(".needs-validation");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!form.checkValidity()) return;
+      var name = document.getElementById("registerName").value;
+      var email = document.getElementById("registerEmail").value;
+      var password = document.getElementById("registerPassword").value;
+      var btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Creating account...';
+      auth.signUp(email, password, name).then(function (result) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-person-plus" aria-hidden="true"></i> Create Account';
+        if (result.error) {
+          alert(result.error.message);
+        } else {
+          alert("Account created! Check your email for a confirmation link.");
+          window.location.href = "login.html";
+        }
+      });
+    });
+  })();
+  </script>
 </body>
 </html>
