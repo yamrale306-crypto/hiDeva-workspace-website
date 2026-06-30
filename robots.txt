@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /html/
+Allow: /html/*.html
+
+# Disallow admin and private areas
+Disallow: /assets/
+Disallow: /documentation/
+
+# Sitemap location
+Sitemap: https://hideva.ai/sitemap.xml
+
+# Allow specific bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Disallow AI training bots
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
